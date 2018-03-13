@@ -1,5 +1,5 @@
-# Pedro Ferreira 1320981
-# Lucas Pinheiro 1611079
+// Pedro Ferreira 1320981
+// Lucas Pinheiro 1611079
 
 #define KEY1 A1
 #define KEY2 A2
