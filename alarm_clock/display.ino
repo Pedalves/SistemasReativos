@@ -26,13 +26,36 @@ void Display::show(){
   }
 }
 
+void Display::setPos(int pos){
+  if(0 <= pos < 4){
+    this->_pos = pos;
+  }
+}
+
 void Display::nextPos(){
 	this->_pos = this->_pos < 3 ? this->_pos + 1 : 0;
 }
 
+int Display::getPos(){
+  return this->_pos;
+}
+
 void Display::addValue(){
-	this->_currValue[this->_pos] = this->_currValue[this->_pos] < this->_maxValue[this->_pos] ? this->_currValue[this->_pos] + 1 : 0;
-  _writeNumberToSegment(this->_currValue[this->_pos], this->_pos);
+  this->_currValue[this->_pos] = this->_currValue[this->_pos] < this->_maxValue[this->_pos] ? this->_currValue[this->_pos] + 1 : 0;
+  if(this->_currValue[0] == 2)
+  {
+      this->_currValue[1] = this->_currValue[1] < 4 ? this->_currValue[1]: 0;
+  }
+  _writeNumberToSegment(this->_pos, this->_currValue[this->_pos]);
+}
+
+void Display::setValue(int value, int pos){
+  this->_currValue[pos] = value;
+  _writeNumberToSegment(pos, this->_currValue[pos]);
+}
+
+int Display::getValue(int pos){
+  return this->_currValue[pos];
 }
 
 Display::~Display(){}

@@ -10,8 +10,13 @@ public:
  
   void show();
 
+  void setPos(int pos);
 	void nextPos();
+  int getPos();
+ 
   void addValue();
+  void setValue(int value, int pos);
+  int getValue(int pos);
   
 private:
 	void _writeNumberToSegment(byte Segment, byte Value);
