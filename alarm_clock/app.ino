@@ -6,8 +6,8 @@
 static int hour[]={2,9,5,9};
 static int turn_on[]={1,0,0,0};
 
-static int last_show = 0;
-static int last_pressed = 0;
+static unsigned int last_show = 0;
+static unsigned int last_pressed = 0;
 
 // Current time
 static Display* display_clock;
@@ -37,10 +37,11 @@ void appinit(void){
 }
 
 void show(){
-  int curr = millis();
+  unsigned int curr = millis();
 
   // update the current time on the clock, if alarm mode is on trigger the buzz if the time to wake has come
-  if(abs(curr - last_show) >= 59990)
+  Serial.println(curr - last_show);
+  if(curr - last_show >= 60000)
   {
     for(int i = 3; i >= 0; i--)
     {
@@ -114,7 +115,7 @@ void show(){
 }
 
 void button_changed(int p){
-  int curr = millis();
+  unsigned int curr = millis();
   
   if(abs(curr - last_pressed) >= 300)
   {
