@@ -8,9 +8,14 @@ static int turn_on[]={1,0,0,0};
 
 static int last_show = 0;
 static int last_pressed = 0;
+
+// Current time
 static Display* display_clock;
+// Set time
 static Display* display_set;
+// Set alarm time
 static Display* display_alarm;
+// Turn on alarm
 static Display* display_turn;
 
 static Display* curr_display;
@@ -21,6 +26,7 @@ void appinit(void){
   button_listen(KEY1);
   button_listen(KEY2);
   button_listen(KEY3);
+
   
   display_clock = new Display(hour);
   display_set = new Display(hour);
@@ -32,7 +38,8 @@ void appinit(void){
 
 void show(){
   int curr = millis();
-  
+
+  // update the current time on the clock, if alarm mode is on trigger the buzz if the time to wake has come
   if(abs(curr - last_show) >= 20)
   {
     for(int i = 3; i >= 0; i--)
@@ -44,16 +51,14 @@ void show(){
       {
         break;
       }
-      if(i==0)
-      {
-        i=3;
-      }
     }
 
+    // if alarm's on
     if(display_turn->getValue(0))
     {
       bool time_to_wake = true;
-  
+
+      // check if current time is the same as the alarm time
       for(int i = 0; i < 4; i++){
         if(display_clock->getValue(i) != display_alarm->getValue(i))
           time_to_wake = false;
@@ -67,11 +72,12 @@ void show(){
     
     last_show = millis();
   }
-  
+
   digitalWrite(LED2, HIGH);
   digitalWrite(LED3, HIGH);
   digitalWrite(LED4, HIGH);
 
+  // If alarm mode is on the led remains on
   if(display_turn->getValue(0))
   {
     digitalWrite(LED1, LOW);
@@ -80,7 +86,8 @@ void show(){
   {
     digitalWrite(LED1, HIGH);
   }
-  
+
+  // switch the display to show the one that matches if the mode
   switch(mode)
   {
     case 0:
@@ -111,17 +118,21 @@ void button_changed(int p){
   
   if(abs(curr - last_pressed) >= 300)
   {
-    digitalWrite(BUZZ, HIGH);
     switch(p){
-      case KEY1:   
+      case KEY1: 
+        // Add 1 to the current position on the display. if mode 0 turn off the buzz  
         if(mode)
           curr_display->addValue();
+        else
+          digitalWrite(BUZZ, HIGH);
         break;
        case KEY2:
+        // Change de current position on display
         if(mode)
         {
           if(mode == 1)
           {
+            // You need to pass through all positions so set the new hour as the current time. If mode 0 trigger the snooze mode
             if(curr_display->getPos() == 3)
             {
               for(int i = 0; i < 4; i++){
@@ -131,8 +142,29 @@ void button_changed(int p){
           }
           curr_display->nextPos();
         }
+        else
+        {
+          // Snooze mode
+          if(!digitalRead(BUZZ))
+          {
+            digitalWrite(BUZZ, HIGH);
+
+            // check if 10 more minutes makes the hour be added by 1
+            for(int i = 2; i >= 0; i--)
+            {
+              display_alarm->setPos(i);
+              display_alarm->addValue();
+              
+              if(display_alarm->getValue(i))
+              {
+                break;
+              }
+            }
+          }
+        }
         break;
-      case KEY3:  
+      case KEY3:
+        // change mode  
         mode = mode < 4 ? mode + 1 : 0;
         break;
     }
