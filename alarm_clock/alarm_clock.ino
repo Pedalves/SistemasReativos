@@ -29,7 +29,7 @@ void setup ()
   pinMode(LED2, OUTPUT);
   pinMode(LED3, OUTPUT);
   pinMode(LED4, OUTPUT);
-
+  
   pinMode(BUZZ, OUTPUT);
   
   pinMode(KEY1, INPUT_PULLUP);

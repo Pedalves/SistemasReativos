@@ -40,7 +40,7 @@ void show(){
   int curr = millis();
 
   // update the current time on the clock, if alarm mode is on trigger the buzz if the time to wake has come
-  if(abs(curr - last_show) >= 20)
+  if(abs(curr - last_show) >= 59990)
   {
     for(int i = 3; i >= 0; i--)
     {
