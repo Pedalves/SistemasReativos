@@ -3,6 +3,7 @@
 
 function newblip (sec)
   local x, y = 0, 0
+  
   return {
     update = coroutine.wrap (function (self)
       while 1 do
@@ -27,13 +28,12 @@ function newblip (sec)
     draw = function ()
       love.graphics.rectangle("line", x, y, 10, 10)
     end,
-    ativo = true,
     sleep = 0,
     isActive = function(self)
       if(os.clock() >= self.sleep) then
-        self.ativo = true
+        return true
       end
-      return self.ativo
+      return false
     end
   }
 end
@@ -95,7 +95,6 @@ function love.update(dt)
 end
 
 function wait(segundos, meublip)
-    meublip.ativo = false
     cur = os.clock()
     meublip.sleep = cur+segundos
     coroutine.yield()
