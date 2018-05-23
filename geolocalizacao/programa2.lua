@@ -1,5 +1,5 @@
 
-http.post('https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCj-JSZSFVOpRPkbfa-W3VNdfjeI_QKg5c',
+http.post('https://www.googleapis.com/geolocation/v1/geolocate?key=',
   'Content-Type: application/json\r\n',
     [[
   {
