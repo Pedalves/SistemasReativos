@@ -1,9 +1,7 @@
-﻿-- Renan da Fonte - 1412122
--- Pedro Ferreira - 1320981
--- Anna Letícia Alegria - 1410427
 
 -- Recebe uma lista com as informações dos pontos de acesso e retorna o json a ser enviado
 local cl;
+local topico = "inf1805-prl";
 
 function montaJson(wifiAccessPoints)
   primeirovalor = true;
@@ -25,15 +23,16 @@ function montaJson(wifiAccessPoints)
   
   s = s .. '\n    ]\n  }\n  ]]';
   print(s);
-  http.post('https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCj-JSZSFVOpRPkbfa-W3VNdfjeI_QKg5c',
+  http.post('https://www.googleapis.com/geolocation/v1/geolocate?key=',
   'Content-Type: application/json\r\n', s,
   function(code, data)
     if (code < 0) then
       print("HTTP request failed :", code)
     else
       print(code, data);
-      cl:publish("puc-rio-inf1805",data,0,0, 
+      cl:publish(topico,data,0,0, 
             function(client) print("mandou!") end);
+      topico = "inf1805-prl"
     end
   end);
   return s;
@@ -55,6 +54,8 @@ function novaInscricao (c)
   function novamsg (c, t, m)
     print ("mensagem ".. msgsrec .. ", topico: ".. t .. ", dados: " .. m)
     msgsrec = msgsrec + 1
+    topico = m
+    publica(c)
   end
   c:on("message", novamsg)
 end

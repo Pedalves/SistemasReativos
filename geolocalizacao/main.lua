@@ -114,7 +114,7 @@ function requestLocation ()
   
 end
 
-function requestReceived ()
+function requestReceived (message)
   local pos1lat, pos2lat = string.find(message,'"lat": ')
   local posv = string.find(message, ",", pos2lat)
     
