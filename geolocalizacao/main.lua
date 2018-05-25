@@ -6,9 +6,6 @@ local mqtt = require("ext/mqtt_library")
 
 --------------------------------------------------------------------------
 
-
---------------------------------------------------------------------------
-
 function tabScene()
   return {
     draw = function ()
@@ -92,6 +89,8 @@ function requestScene ()
   }
 end
 
+--------------------------------------------------------------------------
+
 function alertReceived (message)
   if alertsOn == true then
     local pos1lat, pos2lat = string.find(message,'"lat": ')
@@ -107,20 +106,43 @@ function alertReceived (message)
   end
 end
 
+--------------------------------------------------------------------------
+
 function requestLocation ()
   --mqtt pedir coordenadas
-  
-  requestscene.setLatandLong(-21.3333333,31.333333)
-
-  requestscene.printLat = true
+  mqtt_client:publish("inf1805-prl-love", "inf1805-prl-request")
   
 end
+
+function requestReceived ()
+  local pos1lat, pos2lat = string.find(message,'"lat": ')
+  local posv = string.find(message, ",", pos2lat)
+    
+  local pos1long, pos2long = string.find(message,'"lng": ')
+  local posc = string.find(message, "}", pos2long)
+  local newLat = string.sub(message,pos2lat+1,posv-1)
+  local newLong =  string.sub(message,pos2long+1,posc-2)
+  
+  requestscene.setLatandLong(newLat, newLong)
+
+  requestscene.printLat = true
+    
+end
+
+--------------------------------------------------------------------------
 
 function mqttcb(topic, message)
    print("Received from topic: " .. topic .. " - message:" .. message)
-   alertReceived(message)
+   
+    if(topic == 'inf1805-prl') then
+      alertReceived(message)
+    else
+      requestReceived(message)
+    end
    
 end
+
+--------------------------------------------------------------------------
 
 function love.load()
   
@@ -139,10 +161,12 @@ function love.load()
   mqtt_client = mqtt.client.create("test.mosquitto.org", 1883, mqttcb)
   
   mqtt_client:connect("clientid 1320981")
-  mqtt_client:subscribe({"puc-rio-inf1805"})
+  mqtt_client:subscribe({"inf1805-prl"})
+  mqtt_client:subscribe({"inf1805-prl-request"})
   
 end
 
+--------------------------------------------------------------------------
 
 function love.mousepressed(x, y, button, istouch)
      
@@ -166,13 +190,7 @@ function love.mousepressed(x, y, button, istouch)
     end
 end
 
-function love.keypressed (key)
-  if key == "a" then
-    --mqtt_client:publish("apertou-tecla", "a")
-    --alertReceived()
-  end
-end
-
+--------------------------------------------------------------------------
 
 function love.update (dt)
   
@@ -183,6 +201,8 @@ function love.update (dt)
   mqtt_client:handler()
   
 end
+
+--------------------------------------------------------------------------
 
 function love.draw ()
   
