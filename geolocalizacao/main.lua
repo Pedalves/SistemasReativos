@@ -226,7 +226,4 @@ function love.draw ()
       requestscene.printLatandLong()
     end
   end
-  if controle then
-     love.graphics.rectangle("line", 10, 10, 200, 150)
-   end
 end
