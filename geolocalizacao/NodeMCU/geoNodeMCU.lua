@@ -23,7 +23,7 @@ function montaJson(wifiAccessPoints)
   
   s = s .. '\n    ]\n  }\n  ]]';
   print(s);
-  http.post('https://www.googleapis.com/geolocation/v1/geolocate?key=',
+  http.post('https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCj-JSZSFVOpRPkbfa-W3VNdfjeI_QKg5c',
   'Content-Type: application/json\r\n', s,
   function(code, data)
     if (code < 0) then
